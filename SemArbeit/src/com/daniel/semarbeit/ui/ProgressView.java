@@ -1,6 +1,5 @@
 package com.daniel.semarbeit.ui;
 
-import interfaces.Drawable;
 import java.util.ArrayList;
 import javafx.scene.shape.Arc;
 
@@ -8,7 +7,7 @@ import javafx.scene.shape.Arc;
  *
  * @author Daniel
  */
-public class ProgressView implements Drawable {
+public class ProgressView {
     
     private Arc arc;
     
@@ -29,16 +28,10 @@ public class ProgressView implements Drawable {
         
         percent = (double)notes.size()/(double)127;
         length = 360*percent;
-        if(90-length < 0) {
-            startAngle = 360-(90-length);
-        } else {
-            startAngle = 90-length;
-        }
     }
-    
-    @Override
+
     public void draw() {
-        arc.setStartAngle(startAngle);
+        arc.setStartAngle(360-length);
         arc.setLength(length);
     }
 

@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Arc;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import user.NoteSet;
 
@@ -69,6 +70,8 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         pgView = new ProgressView(arcProgress);
         
+        arcProgress.getTransforms().add(new Rotate(-90));
+        arcProgress.setStartAngle(0);
         arcProgressFadeIn = new FadeTransition(Duration.millis(500), arcProgress);
         arcProgressFadeIn.setFromValue(0);
         arcProgressFadeIn.setToValue(1);
