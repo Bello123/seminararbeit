@@ -1,4 +1,4 @@
-package interfaces;
+package com.daniel.semarbeit.interfaces;
 
 /**
  *
