@@ -62,6 +62,7 @@ public class ProgressView {
 
 class ProgressAnimation implements Runnable {
 
+    private final double ANIMATION_LENGTH = 150;
     private Arc arc;
     private double length;
 
@@ -72,14 +73,17 @@ class ProgressAnimation implements Runnable {
     
     @Override
     public void run() {
-        for(int i=0;i<=length;i++) {
-            try {
+        try {
+            for(int i=0;i<=length;i++) {
                 arc.setStartAngle(360-i);
                 arc.setLength(i);
-                Thread.sleep((long)(300/(length-i)));
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ProgressAnimation.class.getName()).log(Level.SEVERE, null, ex);
+                Thread.sleep((long)(ANIMATION_LENGTH/(length-i)));
             }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ProgressAnimation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            arc.setStartAngle(360-length);
+            arc.setLength(length);
         }
     }
     
