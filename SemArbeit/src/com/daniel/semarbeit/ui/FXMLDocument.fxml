@@ -12,7 +12,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="1180.0" prefWidth="2056.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.daniel.semarbeit.ui.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="1294.0" prefWidth="2056.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.daniel.semarbeit.ui.FXMLDocumentController">
     <children>
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
       <BorderPane layoutX="324.0" layoutY="232.0" prefHeight="663.0" prefWidth="928.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -40,7 +40,7 @@
          <center>
             <Pane prefHeight="1131.0" prefWidth="2381.0" BorderPane.alignment="CENTER">
                <children>
-                  <BarChart fx:id="crtInstruments" animated="false" layoutY="14.0" prefHeight="1117.0" prefWidth="2056.0" title="Dein Fortschritt">
+                  <BarChart fx:id="crtInstruments" alternativeColumnFillVisible="true" animated="false" barGap="2.0" categoryGap="0.0" layoutY="648.0" prefHeight="583.0" prefWidth="2056.0" title="Dein Fortschritt">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -48,6 +48,15 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </BarChart>
+                  <BarChart fx:id="crtCategories" prefHeight="529.0" prefWidth="2056.0" title="Categories">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+                  <FlowPane fx:id="flpCategoryButtons" columnHalignment="CENTER" hgap="3.0" layoutX="33.0" layoutY="534.0" prefHeight="109.0" prefWidth="2012.0" vgap="3.0" />
                </children>
             </Pane>
          </center>
