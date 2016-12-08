@@ -19,13 +19,14 @@
          <top>
             <Pane prefHeight="49.0" prefWidth="928.0" BorderPane.alignment="CENTER">
                <children>
-                  <HBox layoutX="14.0" layoutY="6.0" prefHeight="37.0" prefWidth="806.0">
+                  <HBox layoutX="14.0" layoutY="6.0" prefHeight="37.0" prefWidth="2037.0" spacing="3.0">
                      <children>
-                        <Button fx:id="btnLoadNoteSet" mnemonicParsing="false" onAction="#btnLoadNoteSetAction" prefHeight="44.0" prefWidth="99.0" text="Load NoteSet">
+                        <Button fx:id="btnLoadNoteSet" mnemonicParsing="false" onAction="#btnLoadNoteSetAction" prefHeight="37.0" prefWidth="146.0" text="Load NoteSet">
                            <opaqueInsets>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </opaqueInsets>
                         </Button>
+                        <Button fx:id="btnArrangeTrack" mnemonicParsing="false" onAction="#btnArrangeTrackAction" prefHeight="37.0" prefWidth="148.0" text="Arrange Track" />
                      </children>
                      <opaqueInsets>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -42,7 +43,10 @@
                <children>
                   <BarChart fx:id="crtInstruments" alternativeColumnFillVisible="true" animated="false" barGap="2.0" categoryGap="0.0" layoutY="648.0" prefHeight="583.0" prefWidth="2056.0" title="Dein Fortschritt">
                     <xAxis>
-                      <CategoryAxis side="BOTTOM" />
+                      <CategoryAxis side="BOTTOM">
+                           <tickLabelFont>
+                              <Font size="12.0" />
+                           </tickLabelFont></CategoryAxis>
                     </xAxis>
                     <yAxis>
                       <NumberAxis side="LEFT" />
@@ -50,7 +54,10 @@
                   </BarChart>
                   <BarChart fx:id="crtCategories" prefHeight="529.0" prefWidth="2056.0" title="Categories">
                     <xAxis>
-                      <CategoryAxis side="BOTTOM" />
+                      <CategoryAxis side="BOTTOM">
+                           <tickLabelFont>
+                              <Font size="12.0" />
+                           </tickLabelFont></CategoryAxis>
                     </xAxis>
                     <yAxis>
                       <NumberAxis side="LEFT" />
