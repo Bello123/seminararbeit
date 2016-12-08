@@ -1,82 +1,100 @@
 package com.daniel.semarbeit.ui;
 
+import com.daniel.semarbeit.user.Category;
 import com.daniel.utils.Dialogs;
-import com.daniel.utils.Strings;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import static java.util.stream.Collectors.toList;
-import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Arc;
-import javafx.scene.transform.Rotate;
-import javafx.util.Duration;
-import user.NoteSet;
+import com.daniel.semarbeit.user.NoteSet;
+import com.daniel.utils.Transitions;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.chart.BarChart;
+import javafx.scene.layout.FlowPane;
 
 /**
  *
  * @author Daniel
  */
 public class FXMLDocumentController implements Initializable {
-    
-    @FXML
-    private Label label;
+
     @FXML
     private Button btnLoadNoteSet;
     @FXML
-    private ListView<String> lstInstruments;
+    private BarChart crtInstruments;
     @FXML
-    private Arc arcProgress;
-    private FadeTransition arcProgressFadeIn;
+    private BarChart crtCategories;
     @FXML
-    private Label lblProgress;
-            
+    private FlowPane flpCategoryButtons;
+    
     private NoteSet noteSet;
-    private ProgressView pgView;
+
+    private void updateInstrumentChart(int selectedCategory) {
+        crtInstruments.getData().clear();
+        crtInstruments.getData().add(noteSet.getInstrumentsChartDataset(selectedCategory));
+        Transitions.playFadeTransition(crtInstruments, 400, 0, 1);
+    }
+    
+    private void updateCategoryChart() {
+        crtCategories.getData().clear();
+        crtCategories.getData().add(noteSet.getCategoriesChartDataset());
+        Transitions.playFadeTransition(crtInstruments, 400, 0, 1);
+    }
+    
+    private void updateCategoryButtons() {
+        flpCategoryButtons.getChildren().clear();
+        for(Integer i : noteSet.getCategories().keySet()) {
+            Button btn = new Button(Category.getCategoryName(i));
+            btn.setPrefHeight(40);
+            btn.setPrefWidth((flpCategoryButtons.getPrefWidth()-noteSet.getCategories().keySet().size()*3)/10);
+            btn.setOnAction(a -> updateInstrumentChart(i));
+            flpCategoryButtons.getChildren().add(btn);
+        }
+    }
+    
+    private void update() {
+        updateCategoryChart();
+        updateInstrumentChart(1);
+        updateCategoryButtons();
+    }
     
     @FXML
     public void btnLoadNoteSetAction(ActionEvent event) {
-        try {
-            noteSet = new NoteSet();            
+        try {           
             String path = Dialogs.chooseFileDialog("NoteSet Datei auswählen");            
             noteSet.deserialize(path);
-            lstInstruments.getItems().addAll(noteSet.getSounds().keySet().stream().map(s -> Strings.normalizeString(s, "_")).collect(toList()));
-        } catch (Exception ex) {
+            update();
+        } catch (IOException ex) {
             Dialogs.alert("Alert", "Something went wrong", "Die Datei konnte nicht eingelesen werden");
+        } catch(Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
     
     @FXML
-    public void lstInstrumentsSelectedAction(MouseEvent event) {
-        String instrument = lstInstruments.getSelectionModel().getSelectedItem().toUpperCase();
-        ArrayList<String> notes = noteSet.getSounds().get(instrument);
-        pgView.update(instrument, notes);
-        update();
-    }
-    
-    private void update() {
-        pgView.draw();
-        lblProgress.setText((int)pgView.getPercent() + "%");
-        arcProgressFadeIn.play();
+    public void windowClosingAction(ActionEvent event) {
+        try {
+            noteSet.serialize("I:\\Informatik\\semArbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc");
+        } catch (Exception ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pgView = new ProgressView(arcProgress);
-        
-        arcProgress.getTransforms().add(new Rotate(-90));
-        arcProgress.setStartAngle(0);
-        arcProgressFadeIn = new FadeTransition(Duration.millis(500), arcProgress);
-        arcProgressFadeIn.setFromValue(0);
-        arcProgressFadeIn.setToValue(1);
-        arcProgressFadeIn.setCycleCount(1);
-        arcProgressFadeIn.setAutoReverse(true);   
+        noteSet = new NoteSet(); 
+        try {
+            noteSet.deserialize("I:\\Informatik\\semArbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
+            update();
+        } catch (IOException ex) {
+            Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");
+        } catch(Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }    
     
 }

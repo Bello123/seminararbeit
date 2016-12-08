@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.canvas.*?>
@@ -11,7 +12,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="548.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.daniel.semarbeit.ui.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="1294.0" prefWidth="2056.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.daniel.semarbeit.ui.FXMLDocumentController">
     <children>
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
       <BorderPane layoutX="324.0" layoutY="232.0" prefHeight="663.0" prefWidth="928.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,20 +38,25 @@
             </Pane>
          </top>
          <center>
-            <Pane prefHeight="505.0" prefWidth="763.0" BorderPane.alignment="CENTER">
+            <Pane prefHeight="1131.0" prefWidth="2381.0" BorderPane.alignment="CENTER">
                <children>
-                  <ListView fx:id="lstInstruments" layoutX="14.0" layoutY="19.0" onMouseClicked="#lstInstrumentsSelectedAction" prefHeight="462.0" prefWidth="200.0" />
-                  <Arc fx:id="arcProgress" fill="#96bbdd" layoutX="464.0" layoutY="249.0" radiusX="232.0" radiusY="230.0" startAngle="90.0" stroke="BLACK" type="ROUND">
-                     <effect>
-                        <Blend mode="MULTIPLY" opacity="0.37" />
-                     </effect>
-                  </Arc>
-                  <Label fx:id="lblProgress" alignment="CENTER" blendMode="SRC_ATOP" layoutX="232.0" layoutY="230.0" prefHeight="59.0" prefWidth="465.0" text="0%" textAlignment="CENTER">
-                     <font>
-                        <Font size="41.0" />
-                     </font>
-                  </Label>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" blendMode="SRC_ATOP" fill="#94999e" height="39.0" layoutX="403.0" layoutY="240.0" opacity="0.21" stroke="BLACK" strokeType="INSIDE" width="121.0" />
+                  <BarChart fx:id="crtInstruments" alternativeColumnFillVisible="true" animated="false" barGap="2.0" categoryGap="0.0" layoutY="648.0" prefHeight="583.0" prefWidth="2056.0" title="Dein Fortschritt">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+                  <BarChart fx:id="crtCategories" prefHeight="529.0" prefWidth="2056.0" title="Categories">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+                  <FlowPane fx:id="flpCategoryButtons" columnHalignment="CENTER" hgap="3.0" layoutX="33.0" layoutY="534.0" prefHeight="109.0" prefWidth="2012.0" vgap="3.0" />
                </children>
             </Pane>
          </center>
