@@ -1,12 +1,17 @@
 package com.daniel.semarbeit.user;
 
 import com.daniel.semarbeit.interfaces.Serializeable;
+import com.daniel.utils.Mathe;
+import com.daniel.utils.Strings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import static java.util.stream.Collectors.toList;
 import javafx.scene.chart.XYChart;
+
 
 /**
  *
@@ -16,25 +21,25 @@ public class NoteSet implements Serializeable {
 
     public static final int MAX_NOTES = 127;
     
-    private HashMap<String, ArrayList<String>> sounds;
+    private HashMap<Integer, ArrayList<Instrument>> categories;
 
     public NoteSet() {
-        sounds = new HashMap<>();
+        categories = new HashMap<>();
     }
 
-    private void initInstrument(String instrument) {
-        if(!sounds.containsKey(instrument)) {
-            sounds.put(instrument, new ArrayList<>());
+    private void initCategory(int categoryId) {
+        if(!categories.containsKey(categoryId)) {
+            categories.put(categoryId, new ArrayList<>());
         }        
     }
     
     @Override
-    public void serialize(String path) throws Exception {
+    public void serialize(String path) throws IOException {
         System.out.println("Serialized");
     }
 
     @Override
-    public void deserialize(String path) throws Exception {
+    public void deserialize(String path) throws IOException {
         checkFile(path);
 
         try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -43,38 +48,66 @@ public class NoteSet implements Serializeable {
                 String[] parts = line.split(" ");
                 
                 if(parts.length == 0) continue;
-                String instrument = parts[0];
-                initInstrument(instrument);
+                int categoryId = Integer.parseInt(parts[0]);
+                initCategory(categoryId);
                 
-                if(parts.length == 1) continue;                
-                for(String note : parts[1].split(";")) {
-                    if(!sounds.get(instrument).contains(note)) {
-                        sounds.get(instrument).add(note);
-                    }                    
+                if(parts.length == 1) continue;
+                String instrument = parts[1];
+                if(getInstrument(instrument) == null) {
+                    categories.get(categoryId).add(new Instrument(instrument));
+                }
+                
+                if(parts.length == 2) continue;                
+                for(String note : parts[2].split(";")) {
+                    getInstrument(instrument).addNote(note);
                 }
             }
         }
     }
-    private void checkFile(String path) throws Exception {
+    private void checkFile(String path) throws IOException {
         File f = new File(path);
         
-        if(!path.endsWith(".mc")) throw new Exception("Wrong file type");
-        if(!f.exists()) throw new Exception("File not found");
-        if(f.getTotalSpace() == 0) throw new Exception("File is empty");
+        if(!path.endsWith(".mc")) throw new IOException("Wrong file type");
+        if(!f.exists()) throw new IOException("File not found");
+        if(f.getTotalSpace() == 0) throw new IOException("File is empty");
     }
 
-    public HashMap<String, ArrayList<String>> getSounds() {
-        return sounds;
+    public HashMap<Integer, ArrayList<Instrument>> getCategories() {
+        return categories;
     } 
     
-    public XYChart.Series getChartDataset() {
+    private Instrument getInstrument(String name) {
+        for(Integer id : categories.keySet()) {
+            if(categories.get(id).stream().map(i -> i.getName()).collect(toList()).contains(name)) {
+                return categories.get(id)
+                        .stream()
+                        .filter(i -> i.getName().equals(name))
+                        .findFirst().get();
+            }
+        }
+        return null;
+    }
+    
+    public XYChart.Series getCategoriesChartDataset() {
         XYChart.Series dataset = new XYChart.Series(); 
-        dataset.getData().add(new XYChart.Data("Max", MAX_NOTES));
-        for(String instrument : sounds.keySet()) {
-            dataset.getData().add(new XYChart.Data(instrument, sounds.get(instrument).size()));
+        for(Integer category : categories.keySet()) {
+            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category), Mathe.percentOf(categories.get(category).size()*MAX_NOTES, categories.get(category).stream()
+                        .mapToInt(instr -> instr.getNotes().size())
+                        .sum())*100);
+            dataset.getData().add(data);
         }
         
         return dataset;
     }
     
+    public XYChart.Series getInstrumentsChartDataset(int category) {
+        XYChart.Series dataset = new XYChart.Series(); 
+        for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
+            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_"), Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100);
+            dataset.getData().add(data);
+        }
+        
+        return dataset;
+    }
+
 }
