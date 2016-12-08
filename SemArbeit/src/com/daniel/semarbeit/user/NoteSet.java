@@ -91,9 +91,10 @@ public class NoteSet implements Serializeable {
     public XYChart.Series getCategoriesChartDataset() {
         XYChart.Series dataset = new XYChart.Series(); 
         for(Integer category : categories.keySet()) {
-            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category), Mathe.percentOf(categories.get(category).size()*MAX_NOTES, categories.get(category).stream()
+            double percent = Mathe.percentOf(categories.get(category).size()*MAX_NOTES, categories.get(category).stream()
                         .mapToInt(instr -> instr.getNotes().size())
-                        .sum())*100);
+                        .sum())*100;
+            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category) + " (" + Mathe.round(percent, 1) + "%)", percent);
             dataset.getData().add(data);
         }
         
@@ -103,7 +104,8 @@ public class NoteSet implements Serializeable {
     public XYChart.Series getInstrumentsChartDataset(int category) {
         XYChart.Series dataset = new XYChart.Series(); 
         for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
-            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_"), Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100);
+            double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100;
+            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_") + " (" + Mathe.round(percent, 1) + "%)", percent);
             dataset.getData().add(data);
         }
         

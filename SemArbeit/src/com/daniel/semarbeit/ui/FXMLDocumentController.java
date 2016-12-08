@@ -13,8 +13,12 @@ import com.daniel.utils.Transitions;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
 /**
  *
@@ -23,7 +27,7 @@ import javafx.scene.layout.FlowPane;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private Button btnLoadNoteSet;
+    private Button btnLoadNoteSet, btnArrangeTrack;
     @FXML
     private BarChart crtInstruments;
     @FXML
@@ -74,6 +78,21 @@ public class FXMLDocumentController implements Initializable {
             System.out.println(ex.getMessage());
         }
     }
+    
+    @FXML
+    public void btnArrangeTrackAction(ActionEvent event) {
+        try {           
+            FXMLLoader loader = new FXMLLoader (getClass().getResource("FXMLArrangeTrack.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Arrange Track");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            Dialogs.alert("Alert", "Something went wrong", "Das Fenster konnte nicht geladen werden.");
+            System.out.println(ex.getMessage());
+        }
+    }    
     
     @FXML
     public void windowClosingAction(ActionEvent event) {

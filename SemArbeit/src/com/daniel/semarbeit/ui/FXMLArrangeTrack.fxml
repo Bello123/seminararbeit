@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="837.0" prefWidth="1550.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.daniel.semarbeit.ui.FXMLArrangeTrackController">
+   <children>
+      <HBox alignment="CENTER_LEFT" layoutX="226.0" layoutY="786.0" prefHeight="39.0" prefWidth="1324.0" spacing="3.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="170.0" text="Add Track" />
+            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="170.0" text="Remove Track" />
+            <HBox alignment="CENTER" prefHeight="33.0" prefWidth="107.0" spacing="6.0">
+               <children>
+                  <Button fx:id="btnReverse" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="&lt;" />
+                  <Button fx:id="btnPause" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="||" />
+                  <Button fx:id="btnPlay" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="&gt;" />
+               </children>
+               <padding>
+                  <Insets left="6.0" right="6.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="3.0" right="3.0" top="3.0" />
+         </padding>
+      </HBox>
+      <TreeView fx:id="trvNotes" layoutX="14.0" layoutY="14.0" prefHeight="770.0" prefWidth="204.0" />
+      <HBox layoutX="14.0" layoutY="786.0" prefHeight="39.0" prefWidth="204.0" spacing="3.0">
+         <children>
+            <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#btnRefreshAction" prefHeight="33.0" prefWidth="235.0" text="Refresh" />
+         </children>
+         <padding>
+            <Insets bottom="3.0" right="3.0" top="3.0" />
+         </padding>
+      </HBox>
+      <ScrollPane layoutX="226.0" layoutY="14.0" prefHeight="770.0" prefWidth="1316.0">
+         <content>
+            <VBox />
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
