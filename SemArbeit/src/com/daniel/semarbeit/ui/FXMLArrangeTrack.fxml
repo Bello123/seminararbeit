@@ -7,13 +7,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="837.0" prefWidth="1550.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.daniel.semarbeit.ui.FXMLArrangeTrackController">
+<AnchorPane id="AnchorPane" prefHeight="837.0" prefWidth="1550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.daniel.semarbeit.ui.FXMLArrangeTrackController">
    <children>
       <HBox alignment="CENTER_LEFT" layoutX="226.0" layoutY="786.0" prefHeight="39.0" prefWidth="1324.0" spacing="3.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="170.0" text="Add Track" />
-            <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="170.0" text="Remove Track" />
+            <Button fx:id="btnAddTrack" mnemonicParsing="false" onAction="#btnAddTrackAction" prefHeight="33.0" prefWidth="170.0" text="Add Track" />
             <HBox alignment="CENTER" prefHeight="33.0" prefWidth="107.0" spacing="6.0">
                <children>
                   <Button fx:id="btnReverse" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="&lt;" />
@@ -40,7 +38,7 @@
       </HBox>
       <ScrollPane layoutX="226.0" layoutY="14.0" prefHeight="770.0" prefWidth="1316.0">
          <content>
-            <VBox />
+            <VBox fx:id="vbxTracks" spacing="5.0" />
          </content>
       </ScrollPane>
    </children>
