@@ -19,12 +19,16 @@ import javafx.scene.chart.XYChart;
  */
 public class NoteSet implements Serializeable {
 
-    public static final int MAX_NOTES = 127;
+    public static final int MAX_NOTES = 128;
     
     private HashMap<Integer, ArrayList<Instrument>> categories;
 
     public NoteSet() {
         categories = new HashMap<>();
+        initCategory(0);
+        Instrument util = new Instrument("Util");
+        util.addNote("*Free*");
+        categories.get(0).add(util);
     }
 
     private void initCategory(int categoryId) {
@@ -112,4 +116,14 @@ public class NoteSet implements Serializeable {
         return dataset;
     }
 
+    public boolean containsNote(String note) {
+        for(Integer c : categories.keySet()) {
+            for(Instrument i : categories.get(c)) {
+                if(i.getNotes().contains(note)) return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }

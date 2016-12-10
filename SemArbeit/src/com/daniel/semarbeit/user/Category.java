@@ -6,6 +6,7 @@ package com.daniel.semarbeit.user;
  */
 public class Category {
     
+    public static final String CAT_0 = "Utilities";
     public static final String CAT_1 = "Cat 1";
     public static final String CAT_2 = "Cat 2";
     public static final String CAT_3 = "Cat 3";
@@ -25,6 +26,7 @@ public class Category {
     
     public static String getCategoryName(int id) {
         switch(id) {
+            case 0: return CAT_0;
             case 1: return CAT_1;
             case 2: return CAT_2;
             case 3: return CAT_3;

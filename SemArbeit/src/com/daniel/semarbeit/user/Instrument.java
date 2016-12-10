@@ -18,7 +18,7 @@ public class Instrument {
 
     public void addNote(String note) {
         if(!notes.contains(note)) {
-            notes.add(note);
+            notes.add(note.toUpperCase());
         }
     }
     
