@@ -1,6 +1,6 @@
 package com.daniel.semarbeit.ui.elements;
 
-import com.daniel.utils.Transitions;
+import com.daniel.semarbeit.util.Transitions;
 import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,9 +24,7 @@ import javafx.scene.paint.Paint;
  * @author Daniel
  */
 public class Track extends HBox {
-    
-    private static int amtTracks = 0;
-    
+
     private VBox parent;
     private Canvas noteTrack;
     private GraphicsContext noteTrackGC;
@@ -34,10 +32,9 @@ public class Track extends HBox {
     private boolean muted, solo;
     private ArrayList<TrackItem> items;
 
-    public Track(VBox parent, int trackId) {
+    public Track(VBox parent) {
         super();
-        this.parent = parent;
-        this.trackId = trackId;  
+        this.parent = parent; 
         muted = false;
         solo = false;
         items = new ArrayList<>();
@@ -151,14 +148,6 @@ public class Track extends HBox {
         noteTrackGC.setStroke(color);
         noteTrackGC.setLineWidth(4);
         noteTrackGC.strokeRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());
-    }
-    
-    public static int getNewTrackId() {
-        return amtTracks++;
-    }
-
-    public int getTrackId() {
-        return trackId;
     }
      
 }

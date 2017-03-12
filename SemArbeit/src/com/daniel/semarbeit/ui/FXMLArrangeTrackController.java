@@ -3,8 +3,8 @@ package com.daniel.semarbeit.ui;
 import com.daniel.semarbeit.ui.elements.Track;
 import com.daniel.semarbeit.user.Category;
 import com.daniel.semarbeit.user.NoteSet;
-import com.daniel.utils.Dialogs;
-import com.daniel.utils.Strings;
+import com.daniel.semarbeit.util.Dialogs;
+import com.daniel.semarbeit.util.Strings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,7 +44,7 @@ public class FXMLArrangeTrackController implements Initializable {
     
     @FXML
     public void btnAddTrackAction(ActionEvent event) {
-        vbxTracks.getChildren().add(new Track(vbxTracks, Track.getNewTrackId()));
+        vbxTracks.getChildren().add(new Track(vbxTracks));
     }
     
     @FXML
@@ -80,7 +80,7 @@ public class FXMLArrangeTrackController implements Initializable {
     private void initNoteSet() {
         noteSet = new NoteSet(); 
         try {
-            noteSet.deserialize("I:\\Informatik\\semArbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
+            noteSet.deserialize("I:\\School\\Sek II\\Seminararbeit\\Code\\seminararbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
             update();
         } catch (IOException ex) {
             Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");

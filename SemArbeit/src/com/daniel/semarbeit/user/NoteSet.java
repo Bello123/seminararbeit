@@ -1,8 +1,8 @@
 package com.daniel.semarbeit.user;
 
 import com.daniel.semarbeit.interfaces.Serializeable;
-import com.daniel.utils.Mathe;
-import com.daniel.utils.Strings;
+import com.daniel.semarbeit.util.Mathe;
+import com.daniel.semarbeit.util.Strings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -98,7 +98,7 @@ public class NoteSet implements Serializeable {
             double percent = Mathe.percentOf(categories.get(category).size()*MAX_NOTES, categories.get(category).stream()
                         .mapToInt(instr -> instr.getNotes().size())
                         .sum())*100;
-            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category) + " (" + Mathe.round(percent, 1) + "%)", percent);
+            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category) + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
             dataset.getData().add(data);
         }
         
@@ -109,7 +109,7 @@ public class NoteSet implements Serializeable {
         XYChart.Series dataset = new XYChart.Series(); 
         for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
             double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100;
-            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_") + " (" + Mathe.round(percent, 1) + "%)", percent);
+            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_") + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
             dataset.getData().add(data);
         }
         

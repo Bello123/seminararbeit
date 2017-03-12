@@ -1,22 +1,22 @@
 package com.daniel.semarbeit.ui;
 
 import com.daniel.semarbeit.user.Category;
-import com.daniel.utils.Dialogs;
+import com.daniel.semarbeit.user.NoteSet;
+import com.daniel.semarbeit.util.Dialogs;
+import com.daniel.semarbeit.util.Transitions;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import com.daniel.semarbeit.user.NoteSet;
-import com.daniel.utils.Transitions;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
@@ -107,7 +107,7 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         noteSet = new NoteSet(); 
         try {
-            noteSet.deserialize("I:\\Informatik\\semArbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
+            noteSet.deserialize("I:\\School\\Sek II\\Seminararbeit\\Code\\seminararbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
             update();
         } catch (IOException ex) {
             Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");
