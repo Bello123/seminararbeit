@@ -1,6 +1,6 @@
 package com.daniel.semarbeit.ui;
 
-import com.daniel.semarbeit.user.Category;
+import com.daniel.semarbeit.user.Categories;
 import com.daniel.semarbeit.user.NoteSet;
 import com.daniel.semarbeit.util.Dialogs;
 import com.daniel.semarbeit.util.Transitions;
@@ -51,13 +51,15 @@ public class FXMLDocumentController implements Initializable {
     
     private void updateCategoryButtons() {
         flpCategoryButtons.getChildren().clear();
-        for(Integer i : noteSet.getCategories().keySet()) {
-            Button btn = new Button(Category.getCategoryName(i));
+        noteSet.getCategories().keySet().stream().map((i) -> {
+            Button btn = new Button(Categories.getCategoryName(i));
             btn.setPrefHeight(40);
             btn.setPrefWidth((flpCategoryButtons.getPrefWidth()-noteSet.getCategories().keySet().size()*3)/10);
             btn.setOnAction(a -> updateInstrumentChart(i));
+            return btn;
+        }).forEach((btn) -> {
             flpCategoryButtons.getChildren().add(btn);
-        }
+        });
     }
     
     private void update() {
@@ -74,6 +76,7 @@ public class FXMLDocumentController implements Initializable {
             update();
         } catch (IOException ex) {
             Dialogs.alert("Alert", "Something went wrong", "Die Datei konnte nicht eingelesen werden");
+            System.out.println(ex.getMessage());
         } catch(Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -97,7 +100,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void windowClosingAction(ActionEvent event) {
         try {
-            noteSet.serialize("I:\\Informatik\\semArbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc");
+            noteSet.serialize("I:\\School\\Sek II\\Seminararbeit\\Code\\seminararbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc");
         } catch (Exception ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }

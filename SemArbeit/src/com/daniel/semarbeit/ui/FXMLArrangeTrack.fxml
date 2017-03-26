@@ -12,11 +12,9 @@
       <HBox alignment="CENTER_LEFT" layoutX="226.0" layoutY="786.0" prefHeight="39.0" prefWidth="1324.0" spacing="3.0">
          <children>
             <Button fx:id="btnAddTrack" mnemonicParsing="false" onAction="#btnAddTrackAction" prefHeight="33.0" prefWidth="170.0" text="Add Track" />
-            <HBox alignment="CENTER" prefHeight="33.0" prefWidth="107.0" spacing="6.0">
+            <HBox alignment="CENTER" prefHeight="33.0" prefWidth="144.0" spacing="6.0">
                <children>
-                  <Button fx:id="btnReverse" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="&lt;" />
-                  <Button fx:id="btnPause" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="||" />
-                  <Button fx:id="btnPlay" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" text="&gt;" />
+                  <Button fx:id="btnPlay" mnemonicParsing="false" onAction="#btnPlayAction" prefHeight="33.0" prefWidth="126.0" text="Play" />
                </children>
                <padding>
                   <Insets left="6.0" right="6.0" />

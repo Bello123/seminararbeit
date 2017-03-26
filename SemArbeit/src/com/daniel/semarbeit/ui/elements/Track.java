@@ -130,6 +130,7 @@ public class Track extends HBox {
     }
     
     public void repaint() {   
+        //x= 3 => spacing
         double x = 3;
         
         noteTrackGC.clearRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());

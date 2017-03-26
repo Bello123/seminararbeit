@@ -1,11 +1,11 @@
 package com.daniel.semarbeit.ui;
 
+import com.daniel.semarbeit.user.NoteSet;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import com.daniel.semarbeit.user.NoteSet;
 
 /**
  *
@@ -23,7 +23,7 @@ public class Boot extends Application {
         stage.show();
         
         NoteSet ns = new NoteSet();
-        ns.deserialize("C:\\Users\\Daniel\\Desktop\\seminararbeit_notes.mc");
+        //ns.deserialize("C:\\Users\\Daniel\\Desktop\\seminararbeit_notes.mc");
     }
 
     /**

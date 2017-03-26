@@ -2,7 +2,6 @@ package com.daniel.semarbeit.user;
 
 import com.daniel.semarbeit.interfaces.Serializeable;
 import com.daniel.semarbeit.util.Mathe;
-import com.daniel.semarbeit.util.Strings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,10 +24,6 @@ public class NoteSet implements Serializeable {
 
     public NoteSet() {
         categories = new HashMap<>();
-        initCategory(0);
-        Instrument util = new Instrument("Util");
-        util.addNote("*Free*");
-        categories.get(0).add(util);
     }
 
     private void initCategory(int categoryId) {
@@ -51,19 +46,25 @@ public class NoteSet implements Serializeable {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
                 
+                //create new category if neccessary
                 if(parts.length == 0) continue;
                 int categoryId = Integer.parseInt(parts[0]);
                 initCategory(categoryId);
                 
+                //create new instrument if neccessary
                 if(parts.length == 1) continue;
-                String instrument = parts[1];
-                if(getInstrument(instrument) == null) {
-                    categories.get(categoryId).add(new Instrument(instrument));
+                int instrumentId = Integer.parseInt(parts[1]);
+                if(getInstrument(instrumentId) == null) {
+                    categories.get(categoryId).add(new Instrument(instrumentId));
                 }
                 
+                //add rest note to all instruments
+                getInstrument(instrumentId).addNote("R");
+                
+                //add notes to instrument
                 if(parts.length == 2) continue;                
                 for(String note : parts[2].split(";")) {
-                    getInstrument(instrument).addNote(note);
+                    getInstrument(instrumentId).addNote(note);
                 }
             }
         }
@@ -80,13 +81,19 @@ public class NoteSet implements Serializeable {
         return categories;
     } 
     
-    private Instrument getInstrument(String name) {
+    /**
+     * Looks for an instrument that matches the given name in categories
+     * @param name
+     * @return the first instrument found or null
+     */
+    private Instrument getInstrument(int instrumentId) {
         for(Integer id : categories.keySet()) {
-            if(categories.get(id).stream().map(i -> i.getName()).collect(toList()).contains(name)) {
+            if(categories.get(id).stream().map(i -> i.getId()).collect(toList()).contains(instrumentId)) {
                 return categories.get(id)
                         .stream()
-                        .filter(i -> i.getName().equals(name))
-                        .findFirst().get();
+                        .filter(i -> i.getId() == instrumentId)
+                        .findFirst()
+                        .get();
             }
         }
         return null;
@@ -94,13 +101,15 @@ public class NoteSet implements Serializeable {
     
     public XYChart.Series getCategoriesChartDataset() {
         XYChart.Series dataset = new XYChart.Series(); 
-        for(Integer category : categories.keySet()) {
+        categories.keySet().stream().map((category) -> {
             double percent = Mathe.percentOf(categories.get(category).size()*MAX_NOTES, categories.get(category).stream()
-                        .mapToInt(instr -> instr.getNotes().size())
-                        .sum())*100;
-            XYChart.Data<String, Number> data = new XYChart.Data(Category.getCategoryName(category) + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
+                    .mapToInt(instr -> instr.getNotes().size())
+                    .sum())*100;
+            XYChart.Data<String, Number> data = new XYChart.Data(Categories.getCategoryName(category) + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
+            return data;
+        }).forEach((data) -> {
             dataset.getData().add(data);
-        }
+        });
         
         return dataset;
     }
@@ -108,22 +117,22 @@ public class NoteSet implements Serializeable {
     public XYChart.Series getInstrumentsChartDataset(int category) {
         XYChart.Series dataset = new XYChart.Series(); 
         for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
-            double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100;
-            XYChart.Data<String, Number> data = new XYChart.Data(Strings.normalizeString(instrument.getName(), "_") + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
+            //percent without the rest note (default)
+            double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size()-1)*100;
+            XYChart.Data<String, Number> data = new XYChart.Data(instrument.getName() + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
             dataset.getData().add(data);
         }
         
         return dataset;
     }
 
+    /**
+     * Looks for the given note in all instruemnts
+     * @param note
+     * @return 
+     */
     public boolean containsNote(String note) {
-        for(Integer c : categories.keySet()) {
-            for(Instrument i : categories.get(c)) {
-                if(i.getNotes().contains(note)) return true;
-            }
-        }
-        
-        return false;
+        return categories.keySet().stream().anyMatch((c) -> (categories.get(c).stream().anyMatch((i) -> (i.getNotes().contains(note)))));
     }
     
 }

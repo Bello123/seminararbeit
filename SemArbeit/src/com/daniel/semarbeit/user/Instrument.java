@@ -8,11 +8,11 @@ import java.util.ArrayList;
  */
 public class Instrument {
     
-    private String name;
+    private int id;
     private ArrayList<String> notes;
 
-    public Instrument(String name) {
-        this.name = name;
+    public Instrument(int id) {
+        this.id = id;
         notes = new ArrayList<>();
     }
 
@@ -23,11 +23,15 @@ public class Instrument {
     }
     
     public String getName() {
-        return name;
+        return Instruments.getInstrumentName(id);
     }
 
     public ArrayList<String> getNotes() {
         return notes;
+    }
+
+    public int getId() {
+        return id;
     }
     
 }

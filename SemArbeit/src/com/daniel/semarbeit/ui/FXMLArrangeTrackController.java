@@ -1,7 +1,7 @@
 package com.daniel.semarbeit.ui;
 
 import com.daniel.semarbeit.ui.elements.Track;
-import com.daniel.semarbeit.user.Category;
+import com.daniel.semarbeit.user.Categories;
 import com.daniel.semarbeit.user.NoteSet;
 import com.daniel.semarbeit.util.Dialogs;
 import com.daniel.semarbeit.util.Strings;
@@ -31,7 +31,7 @@ public class FXMLArrangeTrackController implements Initializable {
     @FXML
     private TreeView<String> trvNotes;
     @FXML
-    private Button btnRefresh, btnAddTrack;
+    private Button btnRefresh, btnAddTrack, btnPlay;
     @FXML
     private VBox vbxTracks;
     
@@ -48,8 +48,8 @@ public class FXMLArrangeTrackController implements Initializable {
     }
     
     @FXML
-    public void btnRemoveTrackAction(ActionEvent event) {
-        initNoteSet();
+    public void btnPlayAction(ActionEvent event) {
+        
     }
     
     private void update() {
@@ -59,7 +59,7 @@ public class FXMLArrangeTrackController implements Initializable {
     private void loadNoteView() {
         TreeItem<String> root = new TreeItem<>("Categories");
         for(Integer categoryId : noteSet.getCategories().keySet()) {
-            TreeItem<String> categories = new TreeItem<>(Category.getCategoryName(categoryId));
+            TreeItem<String> categories = new TreeItem<>(Categories.getCategoryName(categoryId));
             noteSet.getCategories().get(categoryId).stream().map((instrument) -> {
                 TreeItem<String> instruments = new TreeItem<>(Strings.normalizeString(instrument.getName(), "_"));
                 instrument.getNotes().stream().forEach((note) -> {
