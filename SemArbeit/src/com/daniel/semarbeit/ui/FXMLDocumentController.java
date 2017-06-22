@@ -75,10 +75,10 @@ public class FXMLDocumentController implements Initializable {
             noteSet.deserialize(path);
             update();
         } catch (IOException ex) {
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Die Datei konnte nicht eingelesen werden");
-            System.out.println(ex.getMessage());
         } catch(Exception ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -92,8 +92,8 @@ public class FXMLDocumentController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Das Fenster konnte nicht geladen werden.");
-            System.out.println(ex.getMessage());
         }
     }    
     
@@ -107,15 +107,15 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        noteSet = new NoteSet(); 
+    public void initialize(URL url, ResourceBundle rb) {        
         try {
-            noteSet.deserialize("I:\\School\\Sek II\\Seminararbeit\\Code\\seminararbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc"); 
+            noteSet = new NoteSet();  
             update();
         } catch (IOException ex) {
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");
         } catch(Exception ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
     

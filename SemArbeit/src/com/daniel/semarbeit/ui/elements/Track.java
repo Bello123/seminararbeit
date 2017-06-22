@@ -115,8 +115,8 @@ public class Track extends HBox {
             boolean success = false;
             if(db.hasString()) {
                 String[] elements = db.getString().split(" ");
-                if(elements.length == 3) {
-                    items.add(new TrackItem(elements[1], elements[2]));
+                if(elements.length == 4) {
+                    items.add(new TrackItem(Integer.parseInt(elements[1]), Integer.parseInt(elements[2]), Double.parseDouble(elements[3])));
                     repaint();
                     success = true;
                 } else {
@@ -151,4 +151,20 @@ public class Track extends HBox {
         noteTrackGC.strokeRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());
     }
      
+    @Override
+    public String toString() {
+        String sound = "";
+        sound = items.stream()
+                .map((item) -> 
+                        "[" + item.getInstrument() 
+                            + "] [" 
+                            + item.getNote() 
+                            + "]/" 
+                            + item.getLength() 
+                            + " ")
+                .reduce(sound, String::concat);
+        
+        return sound;
+    }
+    
 }

@@ -1,5 +1,7 @@
 package com.daniel.semarbeit.ui.elements;
 
+import com.daniel.semarbeit.user.Instruments;
+import com.daniel.semarbeit.user.Notes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -10,13 +12,15 @@ import javafx.scene.paint.Color;
 public class TrackItem {
 
     private double width, height;
-    private String note;
-    private String instrument;
+    private int note;
+    private int instrument;
+    private double length;
 
-    public TrackItem(String instrument, String note) {
+    public TrackItem(int instrument, int note, double length) {
         this.note = note;
         this.instrument = instrument;
-        this.width = 180;
+        this.length = length;
+        this.width = 180*length;
         this.height = 100;
     }
     
@@ -27,8 +31,8 @@ public class TrackItem {
         gc.setLineWidth(1.5);
         gc.strokeRect(posX, posY, width, height);
         gc.setFill(Color.BLACK);
-        gc.fillText(instrument, posX+width/2, posY+height/2-10);
-        gc.fillText(note, posX+width/2, posY+height/2);
+        gc.fillText(Instruments.getInstrumentName(instrument), posX+width/2, posY+height/2-10);
+        gc.fillText(Notes.getNoteName(note), posX+width/2, posY+height/2);
     }
 
     public double getWidth() {
@@ -39,12 +43,16 @@ public class TrackItem {
         return height;
     }
 
-    public String getNote() {
+    public int getNote() {
         return note;
     }
 
-    public String getInstrument() {
+    public int getInstrument() {
         return instrument;
+    }
+
+    public double getLength() {
+        return length;
     }
     
 }
