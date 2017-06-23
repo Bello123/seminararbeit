@@ -1,15 +1,14 @@
 package com.daniel.semarbeit.ui.elements;
 
 import com.daniel.semarbeit.util.Transitions;
-import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -17,7 +16,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 /**
  *
@@ -26,18 +24,16 @@ import javafx.scene.paint.Paint;
 public class Track extends HBox {
 
     private VBox parent;
-    private Canvas noteTrack;
-    private GraphicsContext noteTrackGC;
     private int trackId;
     private boolean muted, solo;
-    private ArrayList<TrackItem> items;
 
     public Track(VBox parent) {
         super();
         this.parent = parent; 
         muted = false;
         solo = false;
-        items = new ArrayList<>();
+        setPrefSize(5000, 125);
+        setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
         setAlignment(Pos.CENTER_LEFT);
         setStyle("-fx-background-color: grey;");
         initControls();
@@ -50,7 +46,9 @@ public class Track extends HBox {
         controls.setAlignment(Pos.CENTER_LEFT);
         controls.setPadding(new Insets(0, 5, 0, 5));
         Button btnMute = new Button("M");
-        btnMute.setPrefSize(35, 35);
+        final int BUTTON_SIZE = 35;
+        
+        btnMute.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnMute.setOnAction(event -> {
             if(muted) {
                 muted = false;
@@ -63,7 +61,7 @@ public class Track extends HBox {
             }
         });
         Button btnSolo = new Button("S");
-        btnSolo.setPrefSize(35, 35);
+        btnSolo.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnSolo.setOnAction(event -> {
             if(solo) {
                 solo = false;
@@ -77,7 +75,7 @@ public class Track extends HBox {
             
         });
         Button btnDelete = new Button("X");
-        btnDelete.setPrefSize(35, 35);
+        btnDelete.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnDelete.setOnAction(event -> {
             parent.getChildren().remove(this);            
         });
@@ -85,39 +83,22 @@ public class Track extends HBox {
         getChildren().add(controls);
     }
     
-    private void initNoteTrack() {
-        noteTrack = new Canvas(5000, 125);
-        noteTrackGC = noteTrack.getGraphicsContext2D();
-        getChildren().add(noteTrack);
-        drawNoteTrackBackground(Color.LIGHTGREY);
-        
-        noteTrack.setOnDragOver((DragEvent event) -> {
-            if (event.getGestureSource() != noteTrack &&
-                event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            }
+    private void initNoteTrack() {        
+        setOnDragOver((DragEvent event) -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }            
+            event.consume();
+        });
+        setOnDragDropped((DragEvent event) -> {
+            if(getChildren().size() > 2) return;
             
-            event.consume();
-        });
-        noteTrack.setOnDragEntered((DragEvent event) -> {
-            if (event.getGestureSource() != noteTrack && event.getDragboard().hasString()) {
-                drawNoteTrackBorder(Color.LIGHTGREEN);
-            }
-
-            event.consume();
-        });
-        noteTrack.setOnDragExited((DragEvent event) -> {
-            drawNoteTrackBorder(Color.LIGHTGREY);
-            event.consume();
-        });
-        noteTrack.setOnDragDropped((DragEvent event) -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if(db.hasString()) {
                 String[] elements = db.getString().split(" ");
                 if(elements.length == 4) {
-                    items.add(new TrackItem(Integer.parseInt(elements[1]), Integer.parseInt(elements[2]), Double.parseDouble(elements[3])));
-                    repaint();
+                    getChildren().add(1, new TrackItem(this, Integer.parseInt(elements[1]), Integer.parseInt(elements[2]), Double.parseDouble(elements[3])));
                     success = true;
                 } else {
                     success = false;
@@ -128,40 +109,20 @@ public class Track extends HBox {
             event.consume();
         });
     }
-    
-    public void repaint() {   
-        //x= 3 => spacing
-        double x = 3;
-        
-        noteTrackGC.clearRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());
-        drawNoteTrackBackground(Color.LIGHTGREY);
-        for(int i=0;i<items.size();i++) {
-            items.get(i).draw(noteTrackGC, x, noteTrack.getHeight()/2-items.get(i).getHeight()/2);
-            x += items.get(i).getWidth();
-        }
-     }
-
-    private void drawNoteTrackBackground(Paint color) {
-        noteTrackGC.setFill(color);
-        noteTrackGC.fillRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());
-    }
-    private void drawNoteTrackBorder(Paint color) {
-        noteTrackGC.setStroke(color);
-        noteTrackGC.setLineWidth(4);
-        noteTrackGC.strokeRect(0, 0, noteTrack.getWidth(), noteTrack.getHeight());
-    }
      
     @Override
     public String toString() {
         String sound = "";
-        sound = items.stream()
-                .map((item) -> 
-                        "[" + item.getInstrument() 
+        sound = getChildren().subList(1, getChildren().size()-1).stream()
+                .map((item) -> {
+                        TrackItem ti = (TrackItem)item;
+                        return "[" + ti.getInstrument() 
                             + "] [" 
-                            + item.getNote() 
+                            + ti.getNote() 
                             + "]/" 
-                            + item.getLength() 
-                            + " ")
+                            + ti.getLength() 
+                            + " ";
+                })
                 .reduce(sound, String::concat);
         
         return sound;

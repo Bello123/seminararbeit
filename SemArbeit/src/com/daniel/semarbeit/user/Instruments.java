@@ -16,7 +16,7 @@ public enum Instruments {
     CLAVINET(6, "Clavinet"),
     CELESTA(7, "Celesta"),
     GLOCKENSPIEL(8, "Glockenspiel"),
-    MUSIC_BOX(9, "Musik Box"),
+    MUSIK_BOX(9, "Musik Box"),
     VIBRAPHONE(10, "Vibraphone"),
     MARIMBA(11, "Marimba"),
     XYLOPHONE(12, "Xylophone"),
