@@ -1,5 +1,8 @@
 package com.daniel.semarbeit.ui.elements;
 
+import com.daniel.semarbeit.user.Instruments;
+import com.daniel.semarbeit.user.Notes;
+import com.daniel.semarbeit.util.Strings;
 import com.daniel.semarbeit.util.Transitions;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -113,15 +116,21 @@ public class Track extends HBox {
     @Override
     public String toString() {
         String sound = "";
-        sound = getChildren().subList(1, getChildren().size()-1).stream()
+        if(getChildren().size() <= 1) return "";
+        
+        sound = getChildren().subList(1, getChildren().size()).stream()
                 .map((item) -> {
-                        TrackItem ti = (TrackItem)item;
-                        return "[" + ti.getInstrument() 
-                            + "] [" 
-                            + ti.getNote() 
-                            + "]/" 
-                            + ti.getLength() 
-                            + " ";
+                    TrackItem ti = (TrackItem)item;
+                    if(ti.getNote() == -1) {
+                        return "R ";
+                    } else {
+                        return "[" + Strings.serializeString(Instruments.getInstrumentName(ti.getInstrument())) 
+                        + "][" 
+                        + Strings.serializeString(Notes.getNoteName(ti.getNote())) 
+                        + "]/" 
+                        + ti.getLength() 
+                        + " ";
+                    }                        
                 })
                 .reduce(sound, String::concat);
         

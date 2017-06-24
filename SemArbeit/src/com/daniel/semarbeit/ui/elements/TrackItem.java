@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
  */
 public class TrackItem extends Canvas {
 
+    private final int LEFT_SIDE = 0, RIGHT_SIDE = 1;
+    
     private final GraphicsContext gc;
     private int note;
     private int instrument;
@@ -27,13 +29,13 @@ public class TrackItem extends Canvas {
         setWidth(180*length);
         setHeight(100);
         gc = getGraphicsContext2D();
-        draw(0, 0);
+        draw();
         
         setOnDragOver(event -> {
             drawHighlighter(getDropSide(event.getX()));
         });
         setOnDragExited(event -> {
-            draw(0, 0);
+            draw();
         });
         setOnDragDropped((DragEvent event) -> {
             Dragboard db = event.getDragboard();
@@ -53,38 +55,40 @@ public class TrackItem extends Canvas {
         });
     }
     
-    public void draw(double posX, double posY) {
+    public void draw() {
         gc.setFill(Color.BISQUE);
-        gc.fillRect(posX, posY, getWidth(), getHeight());
+        gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setStroke(Color.BURLYWOOD);
         gc.setLineWidth(1.5);
-        gc.strokeRect(posX, posY, getWidth(), getHeight());
+        gc.strokeRect(0, 0, getWidth(), getHeight());
         gc.setFill(Color.BLACK);
-        gc.fillText(Instruments.getInstrumentName(instrument), posX+getWidth()/2, posY+getHeight()/2-10);
-        gc.fillText(Notes.getNoteName(note), posX+getWidth()/2, posY+getHeight()/2);
+        gc.fillText(Instruments.getInstrumentName(instrument), getWidth()/2, getHeight()/2-10);
+        gc.fillText(Notes.getNoteName(note), getWidth()/2, getHeight()/2);
     }
     
     private int getDropSide(double mouseX) {
         mouseX += getLayoutX();
-        System.out.println(mouseX + " " + getLayoutX());
+
         if(mouseX > getLayoutX() && mouseX < getLayoutX() + getWidth()/2) {
-            return 0;
+            return LEFT_SIDE;
         } else if(mouseX > getLayoutX() + getWidth()/2 && mouseX < getLayoutX() + getWidth()) {
-            return 1;
+            return RIGHT_SIDE;
         } else {
             return -1;
         }
     }
     public void drawHighlighter(int side) {
-        draw(0, 0);
+        final double HIGHLIGHT_SIZE = 3;
+        
+        draw();
         gc.setFill(Color.LIGHTGREEN);
         
         switch (side) {
-            case 0:
-                gc.fillRect(0, 0, 3, getHeight());
+            case LEFT_SIDE:
+                gc.fillRect(0, 0, HIGHLIGHT_SIZE, getHeight());
                 break;
-            case 1:
-                gc.fillRect(getWidth()-3, 0, 3, getHeight());
+            case RIGHT_SIDE:
+                gc.fillRect(getWidth()-HIGHLIGHT_SIZE, 0, HIGHLIGHT_SIZE, getHeight());
                 break;
         }
     }

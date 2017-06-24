@@ -26,6 +26,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
+import org.jfugue.pattern.Pattern;
+import org.jfugue.player.Player;
 
 /**
  * FXML Controller class
@@ -57,7 +59,15 @@ public class FXMLArrangeTrackController implements Initializable {
     
     @FXML
     public void btnPlayAction(ActionEvent event) {
-        
+        Pattern[] patterns = new Pattern[vbxTracks.getChildren().size()];
+        for(int i=0;i<patterns.length;i++) {
+            Track t = (Track)vbxTracks.getChildren().get(i);
+            patterns[i] = new Pattern(t.toString());
+            patterns[i].setVoice(i);
+        }
+
+        Player player = new Player();
+        player.play(patterns);
     }
     
     private void update() {
