@@ -2,12 +2,14 @@ package com.daniel.semarbeit.ui.elements;
 
 import com.daniel.semarbeit.user.Instruments;
 import com.daniel.semarbeit.user.Notes;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -58,12 +60,16 @@ public class TrackItem extends Canvas {
     public void draw() {
         gc.setFill(Color.BISQUE);
         gc.fillRect(0, 0, getWidth(), getHeight());
+        
         gc.setStroke(Color.BURLYWOOD);
         gc.setLineWidth(1.5);
         gc.strokeRect(0, 0, getWidth(), getHeight());
+        
         gc.setFill(Color.BLACK);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
         gc.fillText(Instruments.getInstrumentName(instrument), getWidth()/2, getHeight()/2-10);
-        gc.fillText(Notes.getNoteName(note), getWidth()/2, getHeight()/2);
+        gc.fillText(Notes.getNoteName(note), getWidth()/2, getHeight()/2+10);
     }
     
     private int getDropSide(double mouseX) {

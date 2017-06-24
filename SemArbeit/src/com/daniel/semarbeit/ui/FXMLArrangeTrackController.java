@@ -107,7 +107,11 @@ public class FXMLArrangeTrackController implements Initializable {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (item != null) {
+                    if(empty || item == null) {
+                        setItem(null);
+                        setGraphic(null);
+                        setText(null);
+                    } else {
                         setText(item);
                         if(noteSet.containsNote(Strings.serializeString(item).toUpperCase())) {
                             this.setOnDragDetected((MouseEvent event) -> {
@@ -122,11 +126,8 @@ public class FXMLArrangeTrackController implements Initializable {
 
                                 event.consume();
                             }); 
-                        }
-                    } else {
-                        setItem(null);
-                        setGraphic(null);
-                    }                    
+                        }                        
+                    }                                      
                 }
             };
             

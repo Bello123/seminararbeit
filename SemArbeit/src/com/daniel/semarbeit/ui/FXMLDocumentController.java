@@ -46,6 +46,7 @@ public class FXMLDocumentController implements Initializable {
     private void updateCategoryChart() {
         crtCategories.getData().clear();
         crtCategories.getData().add(noteSet.getCategoriesChartDataset());
+        crtCategories.layout();
         Transitions.playFadeTransition(crtInstruments, 400, 0, 1);
     }
     
@@ -62,9 +63,9 @@ public class FXMLDocumentController implements Initializable {
         });
     }
     
-    private void update() {
-        updateCategoryChart();
+    private void update() {        
         updateInstrumentChart(1);
+        updateCategoryChart();
         updateCategoryButtons();
     }
     
@@ -73,6 +74,7 @@ public class FXMLDocumentController implements Initializable {
         try {           
             String path = Dialogs.chooseFileDialog("NoteSet Datei auswählen");            
             noteSet.deserialize(path);
+            noteSet.save();
             update();
         } catch (IOException ex) {
             Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,6 +102,8 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         try {
+            crtCategories.getXAxis().setAnimated(false);
+            crtInstruments.getXAxis().setAnimated(false);
             noteSet = new NoteSet();          
             update();
         } catch (IOException ex) {

@@ -139,14 +139,14 @@ public class NoteSet implements Serializeable {
     }
     
     public XYChart.Series getInstrumentsChartDataset(int category) {
-        XYChart.Series dataset = new XYChart.Series(); 
-        for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
-            //percent without the rest note (default)
-            double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size()-1)*100;
-            XYChart.Data<String, Number> data = new XYChart.Data(instrument.getName() + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
-            dataset.getData().add(data);
-        }
-        
+        XYChart.Series dataset = new XYChart.Series();
+        if(categories.containsKey(category)) {
+            for(Instrument instrument : categories.get(category).stream().sorted((Instrument o1, Instrument o2) -> {return o1.getName().compareTo(o2.getName());}).collect(toList())) {
+                double percent = Mathe.percentOf(MAX_NOTES, instrument.getNotes().size())*100;
+                XYChart.Data<String, Number> data = new XYChart.Data(instrument.getName() + " (" + Mathe.roundToString(percent, 1) + "%)", percent);
+                dataset.getData().add(data);
+            }
+        }        
         return dataset;
     }
 
