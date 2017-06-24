@@ -75,7 +75,7 @@ public class FXMLArrangeTrackController implements Initializable {
     }
     
     private void loadNoteView() {
-        TreeItem<String> root = new TreeItem<>("Categories");
+        TreeItem<String> root = new TreeItem<>("Kategorien");
         for(Integer categoryId : noteSet.getCategories().keySet()) {
             TreeItem<String> categories = new TreeItem<>(Categories.getCategoryName(categoryId));
             

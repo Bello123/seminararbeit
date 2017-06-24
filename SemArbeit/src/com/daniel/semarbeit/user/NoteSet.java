@@ -6,8 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import static java.util.stream.Collectors.toList;
@@ -20,14 +19,16 @@ import javafx.scene.chart.XYChart;
  */
 public class NoteSet implements Serializeable {
 
-    public static final String SAVE_PATH = "#/com/daniel/semarbeit/notes/saved_notes.mc";
+    public static final String SAVE_PATH = "src/com/daniel/semarbeit/notes/saved_notes.mc";
     public static final int MAX_NOTES = 128;
     
     private HashMap<Integer, ArrayList<Instrument>> categories;
 
     public NoteSet() throws IOException {
         categories = new HashMap<>();
-        deserialize(SAVE_PATH);
+        File f = new File(SAVE_PATH);
+        f.createNewFile();
+        deserialize(f.getAbsolutePath());
     }
 
     private void initCategory(int categoryId) {
@@ -36,28 +37,33 @@ public class NoteSet implements Serializeable {
         }        
     }
     
+    public void save() throws IOException {
+        File f = new File(SAVE_PATH);
+        f.createNewFile();
+        serialize(f.getAbsolutePath());
+    }
     @Override
-    public void serialize(String path) throws IOException {
-        System.out.println("Serialized");
+    public void serialize(String path) throws IOException {     
+        checkFile(path);
+
+        try(PrintWriter pw = new PrintWriter(new File(path))) {
+            categories.keySet().stream().forEach((category) -> {
+            categories.get(category).stream().forEach((instrument) -> {
+                    String notes = "";
+                    notes = instrument.getNotes().stream().map(n -> n.getId() + ";").reduce(notes, String::concat);
+                    pw.println(category + " " + instrument.getId() + " " + notes.substring(0, notes.length()-1));
+                });
+            });
+        } catch(Exception ex) {
+            throw new IOException();
+        }
     }
 
     @Override
-    public void deserialize(String path) throws IOException {
-        BufferedReader br;
-        
-        if(!path.endsWith(".mc")) throw new IOException("Wrong file type");
+    public void deserialize(String path) throws IOException {               
+        checkFile(path);
 
-        if(path.startsWith("#")) {
-            path = path.replace("#", "");
-            InputStream is = getClass().getResourceAsStream(path);
-            InputStreamReader isr = new InputStreamReader(is);
-            br = new BufferedReader(isr);
-        } else {
-            checkFile(path);
-            br = new BufferedReader(new FileReader(new File(path)));
-        }     
-        
-        try {
+        try(BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
@@ -85,13 +91,12 @@ public class NoteSet implements Serializeable {
             }
         } catch(IOException | NumberFormatException ex) {
             throw new IOException();
-        } finally {
-            br.close();
-        }        
+        }    
     }
     private void checkFile(String path) throws IOException {
         File f = new File(path);
 
+        if(!path.endsWith(".mc")) throw new IOException("Wrong file type");
         if(!f.exists()) throw new IOException("File not found");
         if(f.getTotalSpace() == 0) throw new IOException("File is empty");
     }

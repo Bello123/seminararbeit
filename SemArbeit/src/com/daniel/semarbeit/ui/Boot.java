@@ -13,9 +13,13 @@ import javafx.stage.Stage;
 public class Boot extends Application {
     
     @Override
-    public void start(Stage stage) throws Exception {        
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));        
+    public void start(Stage stage) throws Exception {    
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
+        Parent root = loader.load();      
         Scene scene = new Scene(root);     
+        stage.setOnCloseRequest(event -> {
+            ((FXMLDocumentController)loader.getController()).closeAndSave();
+        });
         stage.setScene(scene);
         stage.show();
     }

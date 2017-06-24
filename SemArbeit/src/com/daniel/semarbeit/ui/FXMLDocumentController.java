@@ -97,19 +97,10 @@ public class FXMLDocumentController implements Initializable {
         }
     }    
     
-    @FXML
-    public void windowClosingAction(ActionEvent event) {
-        try {
-            noteSet.serialize("I:\\School\\Sek II\\Seminararbeit\\Code\\seminararbeit\\SemArbeit\\src\\com\\daniel\\semarbeit\\notes\\saved_notes.mc");
-        } catch (Exception ex) {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         try {
-            noteSet = new NoteSet();  
+            noteSet = new NoteSet();          
             update();
         } catch (IOException ex) {
             Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
@@ -118,5 +109,16 @@ public class FXMLDocumentController implements Initializable {
             Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
+   
+    public void closeAndSave() {
+        try {
+            Dialogs.alert("Speichern", "NoteSet wird gespeichert", "Bitte warten");
+            noteSet.save();
+        } catch (Exception ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            System.exit(0);
+        }
+    }
     
 }
