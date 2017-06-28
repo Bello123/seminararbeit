@@ -1,5 +1,6 @@
 package com.daniel.semarbeit.user;
 
+import com.daniel.semarbeit.util.Strings;
 import java.util.stream.Stream;
 
 /**
@@ -8,29 +9,29 @@ import java.util.stream.Stream;
  */
 public enum Categories {
     
-    PIANO(1, "Piano"),
-    CHROMATIC_PERCUSSION(2, "Chromatic Percussion"),
-    ORGAN(3, "Organ"),
-    GUITAR(4, "Guitar"),
-    BASS(5, "Bass"),
-    STRINGS(6, "Strings"),
-    ENSEMBLE(7, "Ensemble"),
-    BRASS(8, "Brass"),
-    REED(9, "Reed"),
-    PIPE(10, "Pipe"),
-    SYNTH_LEAD(11, "Synth Lead"),
-    SYNTH_PAD(12, "Synth Pad"),
-    SYNTH_EFFECTS(13, "Synth Effects"),
-    ETHNIC(14, "Ethnic"),
-    PERCUSSIVE(15, "Percussive"),
-    SOUND_EFFECTS(16, "Sound Effects");
-    
+    PIANO(1),
+    CHROMATIC_PERCUSSION(2),
+    ORGAN(3),
+    GUITAR(4),
+    BASS(5),
+    STRINGS(6),
+    ENSEMBLE(7),
+    BRASS(8),
+    REED(9),
+    PIPE(10),
+    SYNTH_LEAD(11),
+    SYNTH_PAD(12),
+    SYNTH_EFFECTS(13),
+    ETHNIC(14),
+    PERCUSSIVE(15),
+    SOUND_EFFECTS(16);
+
     private final int ID;
     private final String NAME;
 
-    private Categories(int ID, String NAME) {
+    private Categories(int ID) {
         this.ID = ID;
-        this.NAME = NAME;
+        this.NAME = Strings.normalizeString(name(), "_");
     }
 
     public int getID() {

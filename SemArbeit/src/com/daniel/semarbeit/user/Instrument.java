@@ -17,7 +17,7 @@ public class Instrument {
     }
 
     public void addNote(int note) {
-        if(!hasNote(note)) {
+        if(!hasNote(note) && !Notes.getNoteName(note).equals("Undefined")) {
             notes.add(new Note(note));
         }
     }
@@ -31,7 +31,7 @@ public class Instrument {
     public boolean hasNote(String note) {       
         if(note == null) return false;
         
-        if(Character.isDigit(note.charAt(note.length()-1)) || note.equals("R")) {       
+        if(Character.isDigit(note.charAt(note.length()-1)) || note.equals(Notes.R.getNAME())) {       
             return notes.stream()
                 .mapToInt(n -> n.getId())
                 .filter(nid -> {                    

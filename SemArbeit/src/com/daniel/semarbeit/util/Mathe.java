@@ -88,7 +88,7 @@ public class Mathe {
         return et;
     }
     
-    public static String roundToString(double x, int decimals) {
+    public static String truncateToString(double x, int decimals) {
         String pattern = "#0";
         
         if(decimals > 0) pattern += ".";
@@ -99,8 +99,8 @@ public class Mathe {
         return format.format(x);
     }
     
-    public static double roundToDouble(double x, int decimals) {
-        return Double.valueOf(roundToString(x, decimals));
+    public static double truncateToDouble(double x, int decimals) {
+        return Double.valueOf(truncateToString(x, decimals));
     }
     
     

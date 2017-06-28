@@ -72,15 +72,19 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void btnLoadNoteSetAction(ActionEvent event) {
         try {           
-            String path = Dialogs.chooseFileDialog("NoteSet Datei auswählen");            
-            noteSet.deserialize(path);
-            noteSet.save();
+            String path = Dialogs.chooseFileDialog("NoteSet Datei auswählen", "*.ns", "*.ds");   
+            if(noteSet == null) {
+                noteSet = new NoteSet(path);
+            } else {
+                noteSet.deserialize(path);
+                noteSet.save();
+            }            
             update();
         } catch (IOException ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Die Datei konnte nicht eingelesen werden");
         } catch(Exception ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
         }
     }
     
@@ -94,7 +98,7 @@ public class FXMLDocumentController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Das Fenster konnte nicht geladen werden.");
         }
     }    
@@ -104,22 +108,22 @@ public class FXMLDocumentController implements Initializable {
         try {
             crtCategories.getXAxis().setAnimated(false);
             crtInstruments.getXAxis().setAnimated(false);
-            noteSet = new NoteSet();          
+            noteSet = new NoteSet(NoteSet.getSAVE_PATH());          
             update();
         } catch (IOException ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");
         } catch(Exception ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
         }
     }    
    
     public void closeAndSave() {
         try {
             Dialogs.alert("Speichern", "NoteSet wird gespeichert", "Bitte warten");
-            noteSet.save();
+            if(noteSet != null) noteSet.save();
         } catch (Exception ex) {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
         } finally {
             System.exit(0);
         }

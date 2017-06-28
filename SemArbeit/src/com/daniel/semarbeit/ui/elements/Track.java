@@ -1,12 +1,10 @@
 package com.daniel.semarbeit.ui.elements;
 
-import com.daniel.semarbeit.user.Instruments;
-import com.daniel.semarbeit.user.Notes;
-import com.daniel.semarbeit.util.Strings;
 import com.daniel.semarbeit.util.Transitions;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -25,7 +23,7 @@ import javafx.scene.paint.Color;
  * @author Daniel
  */
 public class Track extends HBox {
-
+    
     private VBox parent;
     private int trackId;
     private boolean muted, solo;
@@ -35,7 +33,7 @@ public class Track extends HBox {
         this.parent = parent; 
         muted = false;
         solo = false;
-        setPrefSize(5000, 125);
+        setPrefSize(5000, 165);
         setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
         setAlignment(Pos.CENTER_LEFT);
         setStyle("-fx-background-color: grey;");
@@ -45,39 +43,39 @@ public class Track extends HBox {
     }   
     
     private void initControls() {
+        final int BUTTON_SIZE = 36;
+        
         VBox controls = new VBox(3);
         controls.setAlignment(Pos.CENTER_LEFT);
-        controls.setPadding(new Insets(0, 5, 0, 5));
-        Button btnMute = new Button("M");
-        final int BUTTON_SIZE = 35;
+        controls.setPadding(new Insets(0, 5, 0, 5));                
         
+        Button btnMute = new Button("M");
+        btnMute.setTooltip(new Tooltip("Diese Spur stummstellen"));
         btnMute.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnMute.setOnAction(event -> {
             if(muted) {
                 muted = false;
-                btnMute.setBorder(Border.EMPTY);
-                System.out.println("Unmuted track " + trackId);   
+                btnMute.setBorder(Border.EMPTY); 
             } else {
                 muted = true;
-                btnMute.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
-                System.out.println("Muted track " + trackId);   
+                btnMute.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.MEDIUM)));
             }
         });
         Button btnSolo = new Button("S");
+        btnSolo.setTooltip(new Tooltip("Nur diese Spur wird gespielt"));
         btnSolo.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnSolo.setOnAction(event -> {
             if(solo) {
                 solo = false;
-                btnSolo.setBorder(Border.EMPTY);
-                System.out.println("Disabled solo playing track " + trackId); 
+                btnSolo.setBorder(Border.EMPTY); 
             } else {
                 solo = true;
-                btnSolo.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
-                System.out.println("Solo playing track " + trackId); 
+                btnSolo.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.MEDIUM)));
             }
             
         });
         Button btnDelete = new Button("X");
+        btnDelete.setTooltip(new Tooltip("Spur löschen"));
         btnDelete.setPrefSize(BUTTON_SIZE, BUTTON_SIZE);
         btnDelete.setOnAction(event -> {
             parent.getChildren().remove(this);            
@@ -101,7 +99,7 @@ public class Track extends HBox {
             if(db.hasString()) {
                 String[] elements = db.getString().split(" ");
                 if(elements.length == 4) {
-                    getChildren().add(1, new TrackItem(this, Integer.parseInt(elements[1]), Integer.parseInt(elements[2]), Double.parseDouble(elements[3])));
+                    getChildren().add(1, new TrackItem(this, Integer.parseInt(elements[1]), Integer.parseInt(elements[2]), elements[3]));
                     success = true;
                 } else {
                     success = false;
@@ -112,11 +110,23 @@ public class Track extends HBox {
             event.consume();
         });
     }
+
+    public int getTrackId() {
+        return trackId;
+    }
+
+    public boolean isMuted() {
+        return muted;
+    }
+
+    public boolean isSolo() {
+        return solo;
+    }
      
     @Override
     public String toString() {
         String sound = "";
-        if(getChildren().size() <= 1) return "";
+        if(getChildren().size() <= 1 || muted) return "";
         
         sound = getChildren().subList(1, getChildren().size()).stream()
                 .map((item) -> {
@@ -124,10 +134,9 @@ public class Track extends HBox {
                     if(ti.getNote() == -1) {
                         return "R ";
                     } else {
-                        return "[" + Strings.serializeString(Instruments.getInstrumentName(ti.getInstrument())) 
-                        + "][" 
-                        + Strings.serializeString(Notes.getNoteName(ti.getNote())) 
-                        + "]/" 
+                        return "I" + ti.getInstrument()
+                        + " " 
+                        + ti.getNote()
                         + ti.getLength() 
                         + " ";
                     }                        

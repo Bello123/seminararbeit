@@ -1,17 +1,24 @@
 package com.daniel.semarbeit.ui;
 
+import com.daniel.semarbeit.interfaces.Serializeable;
 import com.daniel.semarbeit.ui.elements.Track;
+import com.daniel.semarbeit.ui.elements.TrackItem;
 import com.daniel.semarbeit.user.Categories;
 import com.daniel.semarbeit.user.Instruments;
 import com.daniel.semarbeit.user.NoteSet;
 import com.daniel.semarbeit.user.Notes;
 import com.daniel.semarbeit.util.Dialogs;
 import com.daniel.semarbeit.util.Strings;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +33,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
-import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
 /**
@@ -34,7 +40,7 @@ import org.jfugue.player.Player;
  *
  * @author Daniel
  */
-public class FXMLArrangeTrackController implements Initializable {
+public class FXMLArrangeTrackController implements Initializable, Serializeable {
 
     @FXML
     private TreeView<String> trvNotes;
@@ -43,7 +49,7 @@ public class FXMLArrangeTrackController implements Initializable {
     @FXML
     private VBox vbxTracks;
     @FXML
-    private Spinner<Double> spnLength;
+    private Spinner<String> spnLength;
     
     private NoteSet noteSet;
     
@@ -59,15 +65,40 @@ public class FXMLArrangeTrackController implements Initializable {
     
     @FXML
     public void btnPlayAction(ActionEvent event) {
-        Pattern[] patterns = new Pattern[vbxTracks.getChildren().size()];
-        for(int i=0;i<patterns.length;i++) {
-            Track t = (Track)vbxTracks.getChildren().get(i);
-            patterns[i] = new Pattern(t.toString());
-            patterns[i].setVoice(i);
-        }
+        new Thread(() -> {
+            String music = "";
+            for(int i=0;i<vbxTracks.getChildren().size();i++) {
+                Track t = (Track)vbxTracks.getChildren().get(i);
+                if(t.isSolo()) {
+                    music = t.toString();
+                    break;
+                }
 
-        Player player = new Player();
-        player.play(patterns);
+                music += "L" + i + " ";
+                music += t.toString();
+            }
+
+            Player player = new Player();
+            player.play(music);
+        }).start();        
+    }
+    
+    @FXML
+    public void btnSaveAction(ActionEvent event) {
+        try {
+            serialize(Dialogs.createFileDialog("Datei auswählen", "*.t"));
+        } catch (Exception ex) {
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @FXML
+    public void btnLoadAction(ActionEvent event) {
+        try {
+            deserialize(Dialogs.chooseFileDialog("Datei auswählen", "*.t"));
+        } catch (Exception ex) {
+            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void update() {
@@ -98,7 +129,7 @@ public class FXMLArrangeTrackController implements Initializable {
     }
     
     private void initNoteSet() throws IOException {
-        noteSet = new NoteSet(); 
+        noteSet = new NoteSet(NoteSet.getSAVE_PATH()); 
         update();
     }
     private void initNoteTree() throws Exception {
@@ -144,14 +175,61 @@ public class FXMLArrangeTrackController implements Initializable {
             initNoteSet();
             initNoteTree();
             
-            SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.1, 10, 1);
-            spnLength.setValueFactory(valueFactory);
+            SpinnerValueFactory.ListSpinnerValueFactory<String> dblFactory = 
+                    new SpinnerValueFactory.ListSpinnerValueFactory<>(FXCollections.observableArrayList("w", "h", "q", "i", "s", "t"));
+            dblFactory.setValue("w");
+            spnLength.setValueFactory(dblFactory);
         }catch (IOException ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
             Dialogs.alert("Alert", "Something went wrong", "Die gespeicherten Noten konnten nicht eingelesen werden");
         } catch (Exception ex) {
-            Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
         }
     }    
+
+    @Override
+    public void serialize(String path) throws Exception {
+        File f = new File(path);
+        f.createNewFile();
+
+        try(PrintWriter pw = new PrintWriter(new File(path))) {
+            vbxTracks.getChildren().forEach(t -> {
+                pw.println(t.toString());
+            });
+        } catch(Exception ex) {
+            throw new IOException();
+        }
+    }
+    //I56 4w I56 10w 
+    @Override
+    public void deserialize(String path) throws Exception {
+        try(BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
+            String line;
+            while ((line = br.readLine()) != null) {                
+                Track t = new Track(vbxTracks);
+                
+                String[] parts = line.split("I");
+                for(int i=0;i<parts.length;i++) {
+                    if(parts[i].isEmpty()) continue;
+                    
+                    String[] p = parts[i].trim().split(" ");
+                    if(p.length != 2) continue;
+                    
+                    int instrument = Integer.parseInt(p[0]);
+                    
+                    String[] noteAndLength = p[1].split("(?<=\\d)(?=\\D)");
+                    int note = Integer.parseInt(noteAndLength[0]);
+                    
+                    String length = noteAndLength[1];
+                    
+                    t.getChildren().add(new TrackItem(t, instrument, note, length));
+                }
+                
+                vbxTracks.getChildren().add(t);
+            }
+        } catch(IOException | NumberFormatException ex) {
+            throw new IOException();
+        } 
+    }
     
 }
