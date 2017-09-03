@@ -96,8 +96,9 @@ public class FXMLArrangeTrackController implements Initializable, Serializeable 
     public void btnLoadAction(ActionEvent event) {
         try {
             deserialize(Dialogs.chooseFileDialog("Datei auswählen", "*.t"));
-        } catch (Exception ex) {
+        } catch (Exception ex) {            
             Logger.getLogger(FXMLArrangeTrackController.class.getName()).log(Level.SEVERE, null, ex);
+            Dialogs.alert("Alert", "Something went wrong", "Die Datei konnte nicht eingelesen werden");
         }
     }
     
@@ -200,9 +201,11 @@ public class FXMLArrangeTrackController implements Initializable, Serializeable 
             throw new IOException();
         }
     }
-    //I56 4w I56 10w 
+
     @Override
     public void deserialize(String path) throws Exception {
+        vbxTracks.getChildren().clear();
+        
         try(BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
             String line;
             while ((line = br.readLine()) != null) {                
@@ -216,11 +219,14 @@ public class FXMLArrangeTrackController implements Initializable, Serializeable 
                     if(p.length != 2) continue;
                     
                     int instrument = Integer.parseInt(p[0]);
+                    if(Instruments.getInstrumentName(instrument).equals("Undefined")) throw new Exception("Unknown instrument");
                     
                     String[] noteAndLength = p[1].split("(?<=\\d)(?=\\D)");
                     int note = Integer.parseInt(noteAndLength[0]);
+                    if(Notes.getNoteName(note).equals("Undefined")) throw new Exception("Unknown note");
                     
                     String length = noteAndLength[1];
+                    if(!length.matches("[whqist]")) throw new Exception("Unknown length");
                     
                     t.getChildren().add(new TrackItem(t, instrument, note, length));
                 }
@@ -229,7 +235,11 @@ public class FXMLArrangeTrackController implements Initializable, Serializeable 
             }
         } catch(IOException | NumberFormatException ex) {
             throw new IOException();
-        } 
+        } catch(Exception ex) {
+            vbxTracks.getChildren().clear();
+            
+            throw ex;
+        }
     }
     
 }

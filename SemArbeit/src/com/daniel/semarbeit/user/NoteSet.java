@@ -29,16 +29,18 @@ public class NoteSet implements Serializeable {
     public NoteSet(String savePath) throws IOException {
         categories = new HashMap<>();
         
-        File f = new File(savePath);
-        if(f.exists()) {
-            deserialize(savePath);
-        } else {
-            f.mkdirs();
-            f.createNewFile();
-        }
-        SAVE_PATH = savePath;
-        
-        save();
+        if(!savePath.isEmpty()) {
+            File f = new File(savePath);
+            if(f.exists()) {
+                deserialize(savePath);
+            } else {
+                f.mkdirs();
+                f.createNewFile();
+            }
+            SAVE_PATH = savePath;
+
+            save();
+        }     
     }
 
     private void initCategory(int categoryId) {
@@ -48,6 +50,8 @@ public class NoteSet implements Serializeable {
     }
     
     public void save() throws IOException {
+        if(SAVE_PATH.isEmpty()) SAVE_PATH = Dialogs.createFileDialog("Datei speichern", "*.ns");
+        
         File f = new File(SAVE_PATH);
         f.createNewFile();
         serialize(f.getAbsolutePath());
@@ -59,7 +63,7 @@ public class NoteSet implements Serializeable {
             categories.get(category).stream().forEach((instrument) -> {
                     String notes = "";
                     notes = instrument.getNotes().stream().map(n -> n.getId() + ";").reduce(notes, String::concat);
-                    pw.println(category + " " + instrument.getId() + " " + notes.substring(0, notes.length()-1));
+                    pw.println(instrument.getId() + " " + notes.substring(0, notes.length()-1));
                 });
             });
         } catch(Exception ex) {
@@ -68,7 +72,9 @@ public class NoteSet implements Serializeable {
     }
 
     @Override
-    public void deserialize(String path) throws IOException {               
+    public void deserialize(String path) throws IOException {         
+        if(path.isEmpty()) return;
+        
         if(path.endsWith(".ns")) {
             deserializeNoteSet(new File(path));
         } else if(path.endsWith(".ds")) {
@@ -83,28 +89,25 @@ public class NoteSet implements Serializeable {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
 
-                //create new category if neccessary
-                if(parts.length == 0) continue;
-                int categoryId = Integer.parseInt(parts[0]);
-                if(!Categories.getCategoryName(categoryId).equals("Undefined")) {
-                    initCategory(categoryId);
-                } else {
-                    continue;
-                }                
-
                 //create new instrument if neccessary
-                if(parts.length == 1) continue;
-                int instrumentId = Integer.parseInt(parts[1]);
-                if(getInstrument(instrumentId) == null && !Instruments.getInstrumentName(instrumentId).equals("Undefined")) {
-                    categories.get(categoryId).add(new Instrument(instrumentId));
+                if(parts.length == 0) continue;
+                int instrumentId = Integer.parseInt(parts[0]);
+                
+                if(!Instruments.getInstrumentName(instrumentId).equals("Undefined")) {
+                    int categoryId = Instruments.getInstrument(instrumentId).getCATEGORY_ID();
+                    initCategory(categoryId);
+                    
+                    if(getInstrument(instrumentId) == null) {
+                        categories.get(categoryId).add(new Instrument(instrumentId));
+                    }
                 }
-
+                
                 //add rest note to all instruments
                 getInstrument(instrumentId).addNote(-1);
 
                 //add notes to instrument
-                if(parts.length == 2) continue;                
-                for(String note : parts[2].split(";")) {
+                if(parts.length == 1) continue;                
+                for(String note : parts[1].split(";")) {
                     getInstrument(instrumentId).addNote(Integer.parseInt(note));
                 }
             }

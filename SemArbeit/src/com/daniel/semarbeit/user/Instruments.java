@@ -156,4 +156,8 @@ public enum Instruments {
         return Stream.of(Instruments.values()).filter(c -> c.getID() == id).map(c -> c.getNAME()).findFirst().orElse("Undefined");
     }
     
+    public static Instruments getInstrument(int id) {
+        return Instruments.valueOf(Strings.serializeString(getInstrumentName(id).toUpperCase()));
+    }
+    
 }
