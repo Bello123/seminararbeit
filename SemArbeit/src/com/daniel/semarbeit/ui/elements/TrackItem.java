@@ -1,6 +1,6 @@
 package com.daniel.semarbeit.ui.elements;
 
-import com.daniel.semarbeit.user.Notes;
+import com.daniel.semarbeit.model.Notes;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

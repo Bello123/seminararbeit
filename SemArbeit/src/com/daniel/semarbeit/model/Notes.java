@@ -1,4 +1,4 @@
-package com.daniel.semarbeit.user;
+package com.daniel.semarbeit.model;
 
 import java.util.stream.Stream;
 

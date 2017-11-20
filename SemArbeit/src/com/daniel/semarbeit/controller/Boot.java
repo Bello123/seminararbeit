@@ -1,4 +1,4 @@
-package com.daniel.semarbeit.ui;
+package com.daniel.semarbeit.controller;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +18,7 @@ public class Boot extends Application {
     public void start(Stage stage) throws Exception {    
         Logger.getGlobal().setLevel(Level.SEVERE);
         
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/daniel/semarbeit/ui/FXMLDocument.fxml"));
         Parent root = loader.load();      
         Scene scene = new Scene(root);     
         stage.setOnCloseRequest(event -> {

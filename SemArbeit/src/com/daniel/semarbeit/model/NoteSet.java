@@ -1,4 +1,4 @@
-package com.daniel.semarbeit.user;
+package com.daniel.semarbeit.model;
 
 import com.daniel.semarbeit.interfaces.Serializeable;
 import com.daniel.semarbeit.util.Dialogs;
@@ -19,7 +19,6 @@ import javafx.scene.chart.XYChart;
  * @author Daniel
  */
 public class NoteSet implements Serializeable {
-
     
     public static final int MAX_NOTES = 128;    
     private static String SAVE_PATH;
@@ -37,7 +36,12 @@ public class NoteSet implements Serializeable {
                 f.mkdirs();
                 f.createNewFile();
             }
+            
             SAVE_PATH = savePath;
+            if(savePath.endsWith(".ds") || savePath.endsWith(".DS")) {
+                SAVE_PATH = SAVE_PATH.replace(".ds", ".ns");
+                SAVE_PATH = SAVE_PATH.replace(".DS", ".ns");
+            }         
 
             save();
         }     
@@ -75,9 +79,9 @@ public class NoteSet implements Serializeable {
     public void deserialize(String path) throws IOException {         
         if(path.isEmpty()) return;
         
-        if(path.endsWith(".ns")) {
+        if(path.endsWith(".ns") || path.endsWith(".NS")) {
             deserializeNoteSet(new File(path));
-        } else if(path.endsWith(".ds")) {
+        } else if(path.endsWith(".ds") || path.endsWith(".DS")) {
             deserializeDataSet(new File(path));
         } else {
             throw new IOException("No method to deserialize this data type");
@@ -121,17 +125,34 @@ public class NoteSet implements Serializeable {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
 
-                if(parts.length == 0) continue;
-                double height = Math.round(0.047619*Double.parseDouble(parts[0])+0.47619);
-
-                if(parts.length == 1) continue;
-                double temperature = Math.round(0.047619*Double.parseDouble(parts[1])+0.47619);
-
-                if(parts.length == 2) continue;                
-                double bearing = Math.round(0.047619*Double.parseDouble(parts[2])+0.47619);
+                if(parts.length != 3) continue;
                 
-                if(parts.length == 3) continue;                
-                double speed = Math.round(0.047619*Double.parseDouble(parts[3])+0.47619);
+                double height = Double.parseDouble(parts[0]);
+                double temperature = Double.parseDouble(parts[1]);              
+                double bearing = Double.parseDouble(parts[2]);
+                
+                /*
+                Octave = height every 5m
+                Instrument = temperature every 0.5°C
+                note = bearing 360°/11
+                */
+                
+                int instrumentId = (int)Math.min(Math.round(1.9834*temperature+41.661), 121);
+                int octave = (int)Math.min(Math.round(0.2*height), 10);
+                int note = (int)Math.min(Math.round(bearing * 11 / 360), 11);                
+                
+                if(!Instruments.getInstrumentName(instrumentId).equals("Undefined")) {
+                    int categoryId = Instruments.getInstrument(instrumentId).getCATEGORY_ID();
+                    initCategory(categoryId);
+                    
+                    if(getInstrument(instrumentId) == null) {
+                        categories.get(categoryId).add(new Instrument(instrumentId));
+                        //add rest note to all instruments
+                        getInstrument(instrumentId).addNote(-1);
+                    }
+                }              
+                
+                getInstrument(instrumentId).addNote(octave *  12 + note);
             }
         } catch(IOException | NumberFormatException ex) {
             throw new IOException();

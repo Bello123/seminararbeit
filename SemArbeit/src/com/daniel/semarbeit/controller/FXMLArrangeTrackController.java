@@ -1,12 +1,12 @@
-package com.daniel.semarbeit.ui;
+package com.daniel.semarbeit.controller;
 
 import com.daniel.semarbeit.interfaces.Serializeable;
 import com.daniel.semarbeit.ui.elements.Track;
 import com.daniel.semarbeit.ui.elements.TrackItem;
-import com.daniel.semarbeit.user.Categories;
-import com.daniel.semarbeit.user.Instruments;
-import com.daniel.semarbeit.user.NoteSet;
-import com.daniel.semarbeit.user.Notes;
+import com.daniel.semarbeit.model.Categories;
+import com.daniel.semarbeit.model.Instruments;
+import com.daniel.semarbeit.model.NoteSet;
+import com.daniel.semarbeit.model.Notes;
 import com.daniel.semarbeit.util.Dialogs;
 import com.daniel.semarbeit.util.Strings;
 import java.io.BufferedReader;

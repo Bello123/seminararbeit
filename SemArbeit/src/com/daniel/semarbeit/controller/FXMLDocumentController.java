@@ -1,7 +1,7 @@
-package com.daniel.semarbeit.ui;
+package com.daniel.semarbeit.controller;
 
-import com.daniel.semarbeit.user.Categories;
-import com.daniel.semarbeit.user.NoteSet;
+import com.daniel.semarbeit.model.Categories;
+import com.daniel.semarbeit.model.NoteSet;
 import com.daniel.semarbeit.util.Dialogs;
 import com.daniel.semarbeit.util.Transitions;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void btnArrangeTrackAction(ActionEvent event) {
         try {           
-            FXMLLoader loader = new FXMLLoader (getClass().getResource("FXMLArrangeTrack.fxml"));
+            FXMLLoader loader = new FXMLLoader (getClass().getResource("/com/daniel/semarbeit/ui/FXMLArrangeTrack.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Arrange Track");
